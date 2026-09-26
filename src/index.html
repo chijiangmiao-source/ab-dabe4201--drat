@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>深空推进器联锁规程 · 不可满足证明审查台</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="brand">
+    <span class="brand-mark" aria-hidden="true">◈</span>
+    <div>
+      <h1>深空推进器联锁规程 · 不可满足证明审查台</h1>
+      <p class="sub">互斥阀位 / 点火许可 / 故障隔离约束已编译为布尔约束 —— 审查员逐步复核供应商 DRAT 证明，不接受空口“无解”结论</p>
+    </div>
+  </div>
+  <a class="health-link" href="/health" target="_blank" rel="noopener">健康路径 /health</a>
+</header>
+
+<main>
+  <section class="inputs">
+    <div class="panel">
+      <label for="cnf">受限 DIMACS CNF（布尔约束）</label>
+      <textarea id="cnf" rows="10" spellcheck="false" placeholder="p cnf 2 3&#10;1 2 0&#10;-1 2 0&#10;-2 0"></textarea>
+    </div>
+    <div class="panel">
+      <label for="drat">DRAT 加 / 删子句记录（按序，每行一条）</label>
+      <textarea id="drat" rows="10" spellcheck="false" placeholder="-1 0&#10;0"></textarea>
+    </div>
+  </section>
+
+  <section class="controls">
+    <button id="verify-btn" class="primary">开始复核</button>
+    <button id="clear-btn" class="ghost">清空草稿</button>
+    <span class="examples">
+      验收示例：
+      <button class="ghost small" data-ex="rup">RUP 冲突链</button>
+      <button class="ghost small" data-ex="rat">空悬 RAT</button>
+      <button class="ghost small" data-ex="del">删除致败</button>
+      <button class="ghost small" data-ex="bad">混合非法输入</button>
+    </span>
+    <span id="busy" class="busy" hidden>复核中…</span>
+  </section>
+
+  <section id="result" aria-live="polite"></section>
+</main>
+
+<footer class="site-footer">
+  复核依据随步骤变化的活动子句集：新增仅经 RUP 单位传播或指定枢轴 RAT 成立；删除立即生效且已删除子句不得再用；仅当活动集导出空子句方可裁决不可满足。
+</footer>
+
+<script src="/main.js" defer></script>
+</body>
+</html>

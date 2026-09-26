@@ -1,0 +1,34 @@
+# 深空推进器联锁规程 · 不可满足证明审查台
+# 用法：
+#   docker compose up --build web                      # 启动站点（:8080，健康路径 /health）
+#   docker compose up --build --exit-code-from verify verify   # 一次性验收，退出码即结论
+services:
+  web:
+    build:
+      context: .
+      target: runtime
+    image: drat-review-web
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:8080/health').then(r=>process.exit(r.status===200?0:1)).catch(()=>process.exit(1))"
+      interval: 3s
+      timeout: 3s
+      retries: 20
+      start_period: 5s
+
+  verify:
+    build:
+      context: .
+      target: verify
+    image: drat-review-verify
+    depends_on:
+      web:
+        condition: service_healthy
+    environment:
+      SMOKE_BASE_URL: http://web:8080
+    restart: "no"
