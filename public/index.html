@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>深空推进器联锁 · DRAT 逐步复核台</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">◈</span>
+      <div>
+        <h1>深空推进器联锁约束 · DRAT 逐步复核台</h1>
+        <p class="subtitle">受限 DIMACS CNF + 顺序 DRAT 加删记录 · 仅以随步骤变化的活动子句集为依据</p>
+      </div>
+    </div>
+    <div class="health" id="health" title="健康检查 /healthz">
+      <span class="dot" id="healthDot"></span><span id="healthText">探测中…</span>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="pane input-pane">
+      <div class="pane-head">
+        <h2>① 供应商提交件</h2>
+        <label class="scenario-picker">
+          载入验收场景
+          <select id="scenarioSelect">
+            <option value="">— 选择场景 —</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="field">
+        <label for="cnfInput">受限 DIMACS CNF（变量为正整数，子句以 0 结束）</label>
+        <textarea id="cnfInput" spellcheck="false" placeholder="p cnf 2 4&#10;1 2 0&#10;-1 2 0&#10;1 -2 0&#10;-1 -2 0"></textarea>
+      </div>
+
+      <div class="field">
+        <label for="dratInput">顺序 DRAT 记录（每行一条；d 前缀为删除；空矛盾 0 仅可在最后）</label>
+        <textarea id="dratInput" spellcheck="false" placeholder="2 0&#10;-2 0&#10;0"></textarea>
+      </div>
+
+      <div class="controls">
+        <button id="reviewBtn" class="primary">逐步复核</button>
+        <button id="cancelBtn" class="warn" disabled>中止回放</button>
+        <button id="clearBtn" class="ghost">清空草稿与结论</button>
+        <span class="progress" id="progressText"></span>
+      </div>
+      <div class="progress-track" id="progressTrack" hidden><div id="progressBar"></div></div>
+      <p class="hint">长回放运行于 Web Worker：页面保持可操作；每次复核都会先清除上一次结论。删除立即生效，已删除子句不会出现在后续依据中。</p>
+    </section>
+
+    <section class="pane result-pane" id="resultPane">
+      <div class="pane-head"><h2>② 复核结论与逐步依据</h2></div>
+      <div class="empty-result" id="emptyResult">尚未复核。粘贴 CNF 与 DRAT 后点击“逐步复核”，或载入右侧验收场景。</div>
+      <div id="resultBody" hidden></div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <span>RUP：反设新增文字为假后单位传播必须冲突 · RAT：以首文字为枢轴逐一对全部反向文字子句核对</span>
+  </footer>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

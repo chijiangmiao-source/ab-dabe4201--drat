@@ -1,0 +1,17 @@
+{
+  "name": "drat-interlock-review",
+  "version": "1.0.0",
+  "description": "深空推进器联锁约束：受限 DIMACS CNF + 顺序 DRAT 逐步复核",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test test/",
+    "build": "node scripts/build.mjs",
+    "smoke": "node scripts/smoke.mjs",
+    "verify": "npm test && npm run build && npm run smoke"
+  },
+  "license": "UNLICENSED"
+}

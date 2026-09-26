@@ -1,0 +1,37 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: drat-interlock-review:latest
+    ports:
+      - "8080:8080"
+    environment:
+      PORT: "8080"
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:8080/healthz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # 一次性验收服务：代码测试 → 生产构建 → 关联上述证明场景的 HTTP 冒烟。
+  # 对 web 服务实打实地发请求；全部通过后自行退出 0，失败退出 1。
+  verify:
+    image: drat-interlock-review:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      web:
+        condition: service_healthy
+    environment:
+      SMOKE_BASE: "http://web:8080"
+    command:
+      - sh
+      - -c
+      - "npm test && npm run build && SMOKE_BASE=$$SMOKE_BASE npm run smoke"
+    restart: "no"
